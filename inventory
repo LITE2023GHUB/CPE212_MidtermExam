@@ -1,0 +1,8 @@
+[Ubuntu]
+192.168.56.102
+192.168.56.103
+[CentOS]
+192.168.56.104 ansible_user=azamora
+
+[all:vars]
+elastic_stack_services=elasticsearch,kibana,logstash

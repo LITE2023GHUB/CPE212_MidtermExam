@@ -1,0 +1,30 @@
+---
+- name: Install Apache in Ubuntu (httpd)
+  tags: apache2
+  become: yes
+  apt:
+    name: apache2
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Apache in CentOS (httpd)
+  tags: apache2
+  become: yes
+  dnf:
+    name: httpd
+    state: latest
+  when: ansible_distribution == "CentOS"
+  
+- name: start httpf (CentOS)
+  tags: apache2
+  service:
+    name: httpd
+    state: started
+  when: ansible_distribution == "CentOS"
+  
+- name: Allow port 9200 through the firewall
+  tags: apache2
+  command: firewall-cmd --add-port=80/tcp --permanent
+  register: firewall_result
+  ignore_errors: true
+  when: ansible_distribution == "CentOS"

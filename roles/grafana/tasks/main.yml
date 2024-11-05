@@ -1,0 +1,57 @@
+---
+
+- name: Add Grafana GPG key
+  tags: grafana
+  become: yes
+  apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add Grafana APT repository for Ubuntu
+  tags: grafana
+  become: yes
+  apt_repository:
+    repo: "deb https://packages.grafana.com/oss/release/ubuntu/ $(lsb_release -cs) main"
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Grafana on Ubuntu
+  tags: grafana
+  become: yes
+  apt:
+    name: grafana
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add Grafana YUM repository for CentOS
+  tags: grafana
+  become: yes
+  yum_repository:
+    name: grafana
+    description: Grafana YUM Repository
+    baseurl: https://packages.grafana.com/oss/release/rpm
+    gpgcheck: yes
+    enabled: yes
+    gpgkey: https://packages.grafana.com/gpg.key
+  when: ansible_distribution == "CentOS"
+
+- name: Install Grafana on CentOS
+  tags: grafana
+  become: yes
+  yum:
+    name: grafana
+    state: latest
+  when: ansible_distribution == "CentOS"
+
+- name: Start and enable Grafana service
+  tags: grafana
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Print Grafana access URL
+  tags: grafana
+  debug:
+    msg: "Grafana is available at http://{{ ansible_host }}:3000"

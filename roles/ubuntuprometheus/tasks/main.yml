@@ -1,0 +1,16 @@
+---
+- name: Install Prometheus on Ubuntu
+  tags: prometheus
+  apt:
+    name: prometheus
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+  
+- name: Start Prometheus Service (Ubuntu)
+  tags: prometheus
+  systemd:
+    name: prometheus
+    enabled: yes
+    state: started
+  when: ansible_distribution == "Ubuntu"
+

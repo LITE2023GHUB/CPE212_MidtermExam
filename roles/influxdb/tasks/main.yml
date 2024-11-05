@@ -1,0 +1,50 @@
+---
+
+    - name: Add InfluxDB repository (Ubuntu)
+      become: yes
+      apt_repository:
+        repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdb-archive_compat.gpg] https://repos.influxdata.com/debian stable main
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Add InfluxDB repository (CentOS)
+      tags: influx
+      become: yes
+      yum_repository:
+        name: influxdb
+        description: InfluxDB Repository - Stable
+        baseurl: https://repos.influxdata.com/centos/
+        gpgcheck: 1
+        gpgkey: https://repos.influxdata.com/influxdb.key
+      when: ansible_distribution == "CentOS"
+
+    - name: Install InfluxDB
+      tags: influx
+      become: yes
+      package:
+        name: influxdb
+        state: present
+
+    - name: Start and enable InfluxDB service
+      tags: influx
+      service:
+        name: influxdb
+        state: started
+        enabled: yes
+
+    - name: Copy InfluxDB configuration file (Optional)
+      tags: influx
+      become: yes
+      template:
+        src: influxdb.conf.j2
+        dest: /etc/influxdb/influxdb.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: Restart InfluxDB service
+  
+    - name: Restart InfluxDB service
+      tags: influx
+      service:
+        name: influxdb
+        state: restarted

@@ -1,0 +1,13 @@
+---
+- name: start influxdb
+  tags: influx
+  service:
+    name: influxdb
+    state: started
+
+- name: enable influxdb
+  tags: influx
+  service:
+    name: influxdb
+    enabled: yes
+
