@@ -1,1 +1,1 @@
-# CPE212_MidtermExam
+# CPE212_MidtermExam_Magnait
